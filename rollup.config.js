@@ -15,6 +15,8 @@ import path from 'path';
 const lib = require('./package.json');
 
 const namedInput = `./src/index.ts`;
+const year = new Date().getFullYear();
+const banner = `// NordClan-UI v${lib.version} Copyright (c) ${year} ${lib.author} and contributors`;
 
 const buildConfig = ({ browser = true, minifiedVersion = true, ...config }) => {
   const { file } = config.output;
@@ -66,26 +68,23 @@ const buildConfig = ({ browser = true, minifiedVersion = true, ...config }) => {
   return configs;
 };
 
-export default () => {
-  const year = new Date().getFullYear();
-  const banner = `// NordClan-UI v${lib.version} Copyright (c) ${year} ${lib.author} and contributors`;
-
-  return [
-    // Browser CJS bundle
-    ...buildConfig({
-      input: namedInput,
-      minifiedVersion: false,
-      output: {
-        file: `dist/index.cjs`,
-        format: 'cjs',
-        banner
-      }
-    }),
-    {
-      input: 'dist/types/index.d.ts',
-      output: [{ file: 'dist/index.d.ts', format: 'cjs' }],
-      external: [/\.scss$/],
-      plugins: [dts.default()]
+export default [
+  // Browser CJS bundle
+  ...buildConfig({
+    input: namedInput,
+    minifiedVersion: false,
+    output: {
+      file: `dist/index.cjs`,
+      format: 'cjs',
+      sourcemap: true,
+      banner
     }
-  ];
-};
+  }),
+  // Create Declaration types
+  {
+    input: 'dist/types/index.d.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'cjs' }],
+    external: [/\.scss$/],
+    plugins: [dts.default()]
+  }
+];
