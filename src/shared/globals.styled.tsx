@@ -3,7 +3,7 @@ import { css, Global } from '@emotion/react';
 
 import { breakpoint, theme } from './theme';
 
-const globalStyles = (
+export const globalStyles = (
   <Global
     styles={css`
       html {
@@ -33,5 +33,3 @@ const globalStyles = (
     `}
   />
 );
-
-export default globalStyles;

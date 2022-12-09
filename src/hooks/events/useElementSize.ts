@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
 
-import useEventListener from './useEventListener';
-import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
+import { useEventListener } from './useEventListener';
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 interface ISize {
   width: number;
   height: number;
 }
 
-function useElementSize<T extends HTMLElement = HTMLDivElement>(): [(node: T | null) => void, ISize] {
+export function useElementSize<T extends HTMLElement = HTMLDivElement>(): [(node: T | null) => void, ISize] {
   const [ref, setRef] = useState<T | null>(null);
   const [size, setSize] = useState<ISize>({
     width: 0,
@@ -33,5 +33,3 @@ function useElementSize<T extends HTMLElement = HTMLDivElement>(): [(node: T | n
 
   return [setRef, size];
 }
-
-export default useElementSize;

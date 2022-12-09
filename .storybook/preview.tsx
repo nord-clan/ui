@@ -3,7 +3,7 @@ import '../src/styles/index.scss';
 import createCache from '@emotion/cache';
 import { ThemeProvider, CacheProvider } from '@emotion/react';
 import { theme } from '../src/shared/theme';
-import globalStyles from '../src/shared/globals.styled';
+import { globalStyles } from '../src/shared/globals.styled';
 import React from 'react';
 
 // Default Setting
