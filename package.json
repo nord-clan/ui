@@ -1,6 +1,6 @@
 {
   "name": "@nord-clan/ui",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "nord-clan storybook",
   "files": [
     "dist/**/*"
@@ -71,7 +71,6 @@
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^23.0.4",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-typescript": "^10.0.1",
     "@storybook/addon-actions": "6.5.14",
     "@storybook/addon-essentials": "6.5.14",
     "@storybook/addon-interactions": "^6.5.14",
