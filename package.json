@@ -3,7 +3,7 @@
   "version": "0.0.4",
   "description": "nord-clan storybook",
   "files": [
-    "lib/**/*"
+    "dist/**/*"
   ],
   "publishConfig": {
     "access": "public",
