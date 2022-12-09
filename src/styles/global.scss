@@ -1,0 +1,10 @@
+@import './variables';
+@import 'https://fonts.googleapis.com/css2?family=Rubik:wght@300;500;700;800;900&display=swap';
+
+body {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: #{$font-family-base};
+  font-size: #{$font-size-base};
+}

@@ -1,0 +1,8 @@
+{
+    "src/**/*.+(js|jsx|ts|tsx)": [
+        "prettier -c \"./**/*.{ts,tsx,json,scss,md}\"",
+        "eslint --fix",
+        "stylelint --fix",
+        "tsc-files --pretty --noEmit"
+    ]
+}
