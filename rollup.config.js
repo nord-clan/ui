@@ -7,37 +7,35 @@ import { babel } from '@rollup/plugin-babel';
 import dts from 'rollup-plugin-dts';
 import external from 'rollup-plugin-peer-deps-external';
 import { terser } from 'rollup-plugin-terser';
-
+import bundleSize from 'rollup-plugin-bundle-size';
 import scss from 'rollup-plugin-scss';
 import postcss from 'rollup-plugin-postcss';
+import path from 'path';
 
-const packageJson = require('./package.json');
+const lib = require('./package.json');
 
-export default [
-  {
-    input: './src/index.ts',
-    output: [
-      {
-        file: packageJson.min,
-        format: 'cjs',
-        plugins: [terser()]
-      },
-      {
-        file: packageJson.main,
-        format: 'cjs',
-        sourcemap: true
-      },
-      {
-        file: packageJson.module,
-        format: 'esm',
-        sourcemap: true
-      }
-    ],
+const namedInput = `./src/index.ts`;
+
+const buildConfig = ({ browser = true, minifiedVersion = true, ...config }) => {
+  const { file } = config.output;
+  const ext = path.extname(file);
+  const basename = path.basename(file, ext);
+  const extArr = ext.split('.');
+  extArr.shift();
+
+  const build = ({ minified }) => ({
+    ...config,
+    output: {
+      ...config.output,
+      file: `${path.dirname(file)}/${basename}.${(minified ? ['min', ...extArr] : extArr).join('.')}`
+    },
     plugins: [
-      clear({ targets: ['dist'] }),
+      clear({ targets: ['dist', 'lib'] }),
       external(),
-      resolve({ extensions: ['.js', '.ts', '.tsx'] }),
+      resolve({ browser }),
       commonjs(),
+      minified && terser(),
+      minified && bundleSize(),
       typescript({
         tsconfig: './tsconfig.json',
         exclude: ['**/*.stories.tsx']
@@ -57,11 +55,37 @@ export default [
         extensions: ['.js', '.ts', '.tsx']
       })
     ]
-  },
-  {
-    input: 'dist/esm/types/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
-    external: [/\.scss$/],
-    plugins: [dts.default()]
+  });
+
+  const configs = [build({ minified: false })];
+
+  if (minifiedVersion) {
+    configs.push(build({ minified: true }));
   }
-];
+
+  return configs;
+};
+
+export default async () => {
+  const year = new Date().getFullYear();
+  const banner = `// NordClan-UI v${lib.version} Copyright (c) ${year} ${lib.author} and contributors`;
+
+  return [
+    // Browser CJS bundle
+    ...buildConfig({
+      input: namedInput,
+      minifiedVersion: false,
+      output: {
+        file: `dist/index.cjs`,
+        format: 'cjs',
+        banner
+      }
+    }),
+    {
+      input: 'dist/types/index.d.ts',
+      output: [{ file: 'dist/index.d.ts', format: 'cjs' }],
+      external: [/\.scss$/],
+      plugins: [dts.default()]
+    }
+  ];
+};
