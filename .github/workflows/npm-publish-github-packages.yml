@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Cache pnpm modules
+      - name: 💾 Cache pnpm modules
         uses: actions/cache@v3
         env:
           cache-name: cache-pnpm-modules
@@ -33,11 +33,12 @@ jobs:
         with:
           version: 7.x.x
           run_install: true
-      - name: Build project
+      - name: 🔨 Build project
         run: |
           pnpm build
         env:
           CI: true
+
   publish-gpr:
     needs: build
     runs-on: ubuntu-latest
@@ -48,7 +49,7 @@ jobs:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
           scope: '@nord-clan'
-      - name: Cache pnpm modules
+      - name: 💾 Cache pnpm modules
         uses: actions/cache@v3
         env:
           cache-name: cache-pnpm-modules
@@ -57,7 +58,11 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-16-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-16-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - run: pnpm install
-      - run: pnpm publish
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.x.x
+          run_install: true
+      - name: 🚀 Publish packages
+        run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.TOKEN}}
