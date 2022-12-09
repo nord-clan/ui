@@ -66,7 +66,7 @@ const buildConfig = ({ browser = true, minifiedVersion = true, ...config }) => {
   return configs;
 };
 
-export default async () => {
+export default () => {
   const year = new Date().getFullYear();
   const banner = `// NordClan-UI v${lib.version} Copyright (c) ${year} ${lib.author} and contributors`;
 
