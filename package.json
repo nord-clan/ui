@@ -36,7 +36,7 @@
     "nibble": "eslint-nibble --ext .ts,.tsx src/",
     "format": "prettier -c \"./**/*.{ts,tsx,json,scss,md}\"",
     "format:fix": "prettier -w \"./**/*.{ts,tsx,json,scss,md}\"",
-    "chromatic": "npx chromatic --project-token=992b771bca5b",
+    "chromatic": "npx chromatic --project-token=573b51055b3f",
     "prepare": "cd .. && husky install storybook/.husky",
     "prepublishOnly": "npm run build"
   },

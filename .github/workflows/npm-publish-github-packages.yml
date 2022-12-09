@@ -2,20 +2,42 @@ name: Node.js Package
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          node-version: 12
-      - run: yarn install
-      - run: yarn test
-
+          node-version: ${{ matrix.node-version }}
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-pnpm-modules
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.x.x
+          run_install: true
+      - name: Build project
+        run: |
+          pnpm build
+        env:
+          CI: true
   publish-gpr:
     needs: build
     runs-on: ubuntu-latest
@@ -26,7 +48,16 @@ jobs:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
           scope: '@nord-clan'
-      - run: yarn install
-      - run: yarn publish
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-pnpm-modules
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-16-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-16-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - run: pnpm install
+      - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.TOKEN}}
