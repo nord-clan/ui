@@ -36,7 +36,8 @@
     "format": "prettier -c \"./**/*.{ts,tsx,json,scss,md}\"",
     "format:fix": "prettier -w \"./**/*.{ts,tsx,json,scss,md}\"",
     "chromatic": "npx chromatic --project-token=573b51055b3f",
-    "prepare": "cd .. && husky install storybook/.husky"
+    "prepare": "cd .. && husky install storybook/.husky",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@emotion/cache": "^11.10.5",
